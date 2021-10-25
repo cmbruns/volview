@@ -8,11 +8,20 @@ class HelloTriangle(object):
     def __init__(self):
         super().__init__()
         self._is_initialized = False
+        self.vao = None
         self.position_buffer_object = None
         self.vertex_positions = None
         self.program = None
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.dispose_gl()
+
     def init_gl(self):
+        self.vao = GL.glGenVertexArrays(1)
+        GL.glBindVertexArray(self.vao)
         self.position_buffer_object = GL.glGenBuffers(1)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.position_buffer_object)
         self.vertex_positions = numpy.array([
@@ -52,4 +61,9 @@ class HelloTriangle(object):
         GL.glDrawArrays(GL.GL_TRIANGLES, 0, 3)
 
     def dispose_gl(self):
-        pass
+        if self.position_buffer_object is not None:
+            GL.glDeleteBuffers(1, [self.position_buffer_object, ])
+            self.position_buffer_object = None
+        if self.program is not None:
+            GL.glDeleteProgram(self.program)
+            self.program = None
