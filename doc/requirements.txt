@@ -1,0 +1,19 @@
+* Render a triangle or infinite plane or volume
+* With VR or not
+* With Qt or glfw or whatever
+* Always opengl?
+
+with topactor[triangle]:
+    with window[glfw]:
+        window.run(topactor)
+
+cases:
+    same triangle rendering code
+    qt vs. glfw
+    openvr vs on screen vs offscreen to image
+
+performance harness:
+    cases:
+        draw so many cubes
+        so many spheres
+        volume rendering
