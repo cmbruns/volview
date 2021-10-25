@@ -21,7 +21,6 @@ class HelloTriangle(object):
             -0.75, -0.75, 0.0, 1.0,
         ], dtype=numpy.float32)
         GL.glBufferData(GL.GL_ARRAY_BUFFER, self.vertex_positions, GL.GL_STATIC_DRAW)
-        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
         GL.glClearColor(0.0, 0.0, 0.2, 0)
         self.program = shaders.compileProgram(
             shaders.compileShader(inspect.cleandoc("""
@@ -37,24 +36,20 @@ class HelloTriangle(object):
                 out vec4 outputColor;
                 void main()
                 {
-                   outputColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+                   outputColor = vec4(0.9f, 1.0f, 1.0f, 1.0f);
                 }
         """), GL.GL_FRAGMENT_SHADER),
         )
-        # GL.glUseProgram(self.program)
+        GL.glUseProgram(self.program)
+        GL.glEnableVertexAttribArray(0)
+        GL.glVertexAttribPointer(0, 4, GL.GL_FLOAT, False, 0, None)
         self._is_initialized = True
 
     def draw_gl(self):
         if not self._is_initialized:
             self.init_gl()
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
-        GL.glUseProgram(self.program)
-        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.position_buffer_object)
-        GL.glEnableVertexAttribArray(0)
-        GL.glVertexAttribPointer(0, 4, GL.GL_FLOAT, False, 0, None)
         GL.glDrawArrays(GL.GL_TRIANGLES, 0, 3)
-        GL.glDisableVertexAttribArray(0)
-        GL.glUseProgram(0)
 
     def dispose_gl(self):
         pass
