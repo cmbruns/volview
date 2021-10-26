@@ -19,7 +19,7 @@ class HelloTriangle(object):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.dispose_gl()
 
-    def init_gl(self):
+    def init_gl(self) -> None:
         self.vao = GL.glGenVertexArrays(1)
         GL.glBindVertexArray(self.vao)
         self.position_buffer_object = GL.glGenBuffers(1)
@@ -33,7 +33,7 @@ class HelloTriangle(object):
         GL.glClearColor(0.0, 0.0, 0.2, 0)
         self.program = shaders.compileProgram(
             shaders.compileShader(inspect.cleandoc("""
-                #version 330
+                #version 410
                 layout(location = 0) in vec4 position;
                 void main()
                 {
@@ -41,7 +41,7 @@ class HelloTriangle(object):
                 }
             """), GL.GL_VERTEX_SHADER),
             shaders.compileShader(inspect.cleandoc("""
-                #version 330
+                #version 410
                 out vec4 outputColor;
                 void main()
                 {
@@ -54,13 +54,13 @@ class HelloTriangle(object):
         GL.glVertexAttribPointer(0, 4, GL.GL_FLOAT, False, 0, None)
         self._is_initialized = True
 
-    def draw_gl(self):
+    def draw_gl(self) -> None:
         if not self._is_initialized:
             self.init_gl()
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
         GL.glDrawArrays(GL.GL_TRIANGLES, 0, 3)
 
-    def dispose_gl(self):
+    def dispose_gl(self) -> None:
         if self.position_buffer_object is not None:
             GL.glDeleteBuffers(1, [self.position_buffer_object, ])
             self.position_buffer_object = None
