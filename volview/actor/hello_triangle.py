@@ -3,8 +3,10 @@ import numpy
 from OpenGL import GL
 from OpenGL.GL import shaders
 
+from volview.actor import GLActor
 
-class HelloTriangle(object):
+
+class HelloTriangle(GLActor):
     def __init__(self):
         super().__init__()
         self._is_initialized = False

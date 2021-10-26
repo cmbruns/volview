@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
 
-from volview.actor import GLActor
-
 
 class GLWindow(ABC):
     @abstractmethod
