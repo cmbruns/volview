@@ -13,6 +13,8 @@ class HelloTriangle(GLActor):
         self.vao = None
         self.position_buffer_object = None
         self.vertex_positions = None
+        self.vertex_shader = None
+        self.fragment_shader = None
         self.program = None
 
     def __enter__(self):
@@ -33,23 +35,25 @@ class HelloTriangle(GLActor):
         ], dtype=numpy.float32)
         GL.glBufferData(GL.GL_ARRAY_BUFFER, self.vertex_positions, GL.GL_STATIC_DRAW)
         GL.glClearColor(0.0, 0.0, 0.2, 0)
+        self.vertex_shader = shaders.compileShader(inspect.cleandoc("""
+            #version 410
+            layout(location = 0) in vec4 position;
+            void main()
+            {
+               gl_Position = position;
+            }
+        """), GL.GL_VERTEX_SHADER)
+        self.fragment_shader = shaders.compileShader(inspect.cleandoc("""
+            #version 410
+            out vec4 outputColor;
+            void main()
+            {
+               outputColor = vec4(0.9f, 1.0f, 1.0f, 1.0f);
+            }
+        """), GL.GL_FRAGMENT_SHADER)
         self.program = shaders.compileProgram(
-            shaders.compileShader(inspect.cleandoc("""
-                #version 410
-                layout(location = 0) in vec4 position;
-                void main()
-                {
-                   gl_Position = position;
-                }
-            """), GL.GL_VERTEX_SHADER),
-            shaders.compileShader(inspect.cleandoc("""
-                #version 410
-                out vec4 outputColor;
-                void main()
-                {
-                   outputColor = vec4(0.9f, 1.0f, 1.0f, 1.0f);
-                }
-        """), GL.GL_FRAGMENT_SHADER),
+            self.vertex_shader,
+            self.fragment_shader,
         )
         GL.glUseProgram(self.program)
         GL.glEnableVertexAttribArray(0)
@@ -69,3 +73,6 @@ class HelloTriangle(GLActor):
         if self.program is not None:
             GL.glDeleteProgram(self.program)
             self.program = None
+        if self.vao is not None:
+            GL.glDeleteVertexArrays(1, [self.vao])
+            self.vao = None
